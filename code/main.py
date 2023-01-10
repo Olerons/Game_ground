@@ -33,7 +33,7 @@ class Game:
 
     def render(self):
         self.game_screen.fill('black')
-        self.level.draw()
+        self.level.draw(pygame.mouse.get_pos())
         #debug('Test')
 
 
