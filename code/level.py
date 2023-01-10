@@ -1,0 +1,45 @@
+import pygame
+from settings import *
+from tile import Tile
+from debug import debug
+
+
+class Level:
+    def __init__(self):
+        self.screen = pygame.display.get_surface()
+
+        self.bg_sprites = pygame.sprite.Group()
+        self.ground_sprites = pygame.sprite.Group()
+        self.build_sprites = pygame.sprite.Group()
+        self.cursor_sprites = Cursor_group(self.bg_sprites)
+        self.object_sprites = pygame.sprite.Group()
+        self.interface_sprite = pygame.sprite.Group()
+
+        self.create_map()
+
+    def create_map(self):
+        for row in range(100):
+            for col in range(100):
+                x = TILESIZE * col
+                y = TILESIZE * row
+                Tile((x, y), [self.bg_sprites], type='bg')
+
+    def draw(self):
+        self.bg_sprites.draw(self.screen)
+        self.cursor_sprites.update()
+
+
+class Cursor_group(pygame.sprite.Group):
+    def __init__(self, bg_group):
+        super().__init__()
+        self.screen = pygame.display.get_surface()
+        self.bg_sprites = bg_group
+
+    def update(self):
+        self.mouse_pos = pygame.mouse.get_pos()
+        debug(self.mouse_pos)
+        for sprite in self.bg_sprites:
+            if sprite.rect.collidepoint(self.mouse_pos):
+                img = pygame.Surface((TILESIZE, TILESIZE))
+                img.fill('green')
+                self.screen.blit(img, sprite.rect)
