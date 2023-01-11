@@ -3,6 +3,7 @@ from settings import *
 from tile import Tile
 from debug import debug
 from helper_def import import_brush
+from interface import Interface
 
 
 class Level:
@@ -16,7 +17,7 @@ class Level:
         self.build_sprites = pygame.sprite.Group()
         self.cursor_sprites = Cursor_group(self.bg_sprites)
         self.object_sprites = pygame.sprite.Group()
-        self.interface_sprite = pygame.sprite.Group()
+        #self.interface_sprite = Interface(self.screen)
 
         self.create_map()
 
@@ -31,8 +32,9 @@ class Level:
         self.ground_sprites.update(mouse_pos)
 
         self.bg_sprites.draw(self.screen)
-        self.cursor_sprites.draw(mouse_pos)
         self.ground_sprites.draw(self.screen)
+        self.cursor_sprites.draw(mouse_pos)
+        #self.interface_sprite.draw(self.screen)
 
 
 class Cursor_group(pygame.sprite.Group):
@@ -47,6 +49,7 @@ class Cursor_group(pygame.sprite.Group):
             if sprite.rect.collidepoint(mouse_pos):
                 img = pygame.Surface((TILESIZE, TILESIZE))
                 img.fill('green')
+                img.set_alpha(100)
                 self.screen.blit(img, sprite.rect)
 
 
@@ -60,5 +63,6 @@ class Ground_group(pygame.sprite.Group):
         self.mouse_key = pygame.mouse.get_pressed()
         if self.mouse_key[0]:
             for sprite in self.bg_sprites:
+
                 if sprite.rect.collidepoint(mouse_pos):
                     Tile((sprite.rect.x, sprite.rect.y), [self], type='ground_w')

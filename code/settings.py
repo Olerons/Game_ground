@@ -1,5 +1,5 @@
 WIDTH = 1200
-HIGHT = 900
+HIGHT = 500
 
 FPS = 60
 

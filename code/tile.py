@@ -18,3 +18,4 @@ class Tile(pygame.sprite.Sprite):
             self.image = self.brush[choice([171, 172])] # water
 
         self.rect = self.image.get_rect(topleft=pos)
+
