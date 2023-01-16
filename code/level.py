@@ -17,7 +17,7 @@ class Level:
         self.build_sprites = pygame.sprite.Group()
         self.cursor_sprites = Cursor_group(self.bg_sprites)
         self.object_sprites = pygame.sprite.Group()
-        #self.interface_sprite = Interface(self.screen)
+        self.interface_sprite = Interface()
 
         self.create_map()
 
@@ -34,7 +34,7 @@ class Level:
         self.bg_sprites.draw(self.screen)
         self.ground_sprites.draw(self.screen)
         self.cursor_sprites.draw(mouse_pos)
-        #self.interface_sprite.draw(self.screen)
+        self.interface_sprite.draw(self.screen)
 
 
 class Cursor_group(pygame.sprite.Group):
