@@ -31,6 +31,9 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.interface.click(pygame.mouse.get_pos())
+                self.interface.update()
 
     def render(self):
         self.game_screen.fill('black')

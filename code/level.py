@@ -17,7 +17,7 @@ class Level:
         self.build_sprites = pygame.sprite.Group()
         self.cursor_sprites = Cursor_group(self.bg_sprites)
         self.object_sprites = pygame.sprite.Group()
-        self.interface_sprite = interface
+        self.interface = interface
 
         self.create_map()
 
@@ -29,12 +29,12 @@ class Level:
                 Tile((x, y), [self.bg_sprites], type='bg')
 
     def draw(self, mouse_pos):
-        self.ground_sprites.update(mouse_pos)
+        self.ground_sprites.update(mouse_pos, self.interface.get_type())
 
         self.bg_sprites.draw(self.screen)
         self.ground_sprites.draw(self.screen)
         self.cursor_sprites.draw(mouse_pos)
-        self.interface_sprite.draw(self.screen)
+        self.interface.draw(self.screen)
 
 
 class Cursor_group(pygame.sprite.Group):
@@ -59,10 +59,19 @@ class Ground_group(pygame.sprite.Group):
         self.screen = pygame.display.get_surface()
         self.bg_sprites = bg_group
 
-    def update(self, mouse_pos):
-        self.mouse_key = pygame.mouse.get_pressed()
-        if self.mouse_key[0]:
-            for sprite in self.bg_sprites:
+    def update(self, mouse_pos, type):
+        if type and pygame.mouse.get_pressed()[0]:
 
+            for sprite in self.bg_sprites:
                 if sprite.rect.collidepoint(mouse_pos):
-                    Tile((sprite.rect.x, sprite.rect.y), [self], type='ground_w')
+                    x, y = sprite.rect.x, sprite.rect.y
+                    flag = True
+                    for g_sprite in self.sprites():
+                        if g_sprite.rect.collidepoint(mouse_pos) and g_sprite.type != type:
+                            g_sprite.kill()
+                            Tile((x, y), [self], type=type)
+                            flag = False
+                        elif g_sprite.rect.collidepoint(mouse_pos) and g_sprite.type == type:
+                            flag = False
+                    if flag:
+                        Tile((x, y), [self], type=type)
