@@ -7,7 +7,7 @@ from interface import Interface
 
 
 class Level:
-    def __init__(self):
+    def __init__(self, interface):
         self.screen = pygame.display.get_surface()
 
         self.brush = import_brush('../data/img/basictiles2.png', (16, 16))
@@ -17,7 +17,7 @@ class Level:
         self.build_sprites = pygame.sprite.Group()
         self.cursor_sprites = Cursor_group(self.bg_sprites)
         self.object_sprites = pygame.sprite.Group()
-        self.interface_sprite = Interface()
+        self.interface_sprite = interface
 
         self.create_map()
 

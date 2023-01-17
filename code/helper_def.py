@@ -3,7 +3,7 @@ from settings import *
 
 pygame.init()
 
-def load_img(file, colorkey=None):
+def load_img(file, colorkey=None, tile=True):
     img = pygame.image.load(file)
     if colorkey:
         img = img.convert()
@@ -12,7 +12,8 @@ def load_img(file, colorkey=None):
         img.set_colorkey(colorkey)
     else:
         img = img.convert_alpha()
-    img = pygame.transform.scale(img, (TILESIZE, TILESIZE))
+    if tile:
+        img = pygame.transform.scale(img, (TILESIZE, TILESIZE))
     return img
 
 

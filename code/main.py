@@ -3,7 +3,7 @@ import sys
 from debug import debug
 from settings import *
 from level import Level
-
+from interface import Interface
 
 class Game:
     def __init__(self):
@@ -15,7 +15,8 @@ class Game:
         self.running = True
         self.clock = pygame.time.Clock()
 
-        self.level = Level()
+        self.interface = Interface()
+        self.level = Level(self.interface)
 
     def run(self):
         while self.running:
