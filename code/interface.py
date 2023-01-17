@@ -6,6 +6,7 @@ from helper_def import import_brush
 class Interface(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
+        self.footer = Footer()
         self.add(Footer())
 
         self.brush = import_brush('../data/img/basictiles2.png', (16, 16))
