@@ -34,7 +34,9 @@ class Game:
                 self.running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.interface.click(pygame.mouse.get_pos())
-                #self.interface.update()
+
+        if pygame.mouse.get_pressed()[0]:
+            self.level.click(pygame.mouse.get_pos())
 
     def render(self):
         self.game_screen.fill('black')

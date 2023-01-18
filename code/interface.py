@@ -6,21 +6,29 @@ from helper_def import import_brush, load_img
 class Interface(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
+        self.vector = 0
+
         self.footer = Footer()
         self.add(Footer())
 
         self.brush = import_brush('../data/img/basictiles2.png', (16, 16))
 
-        self.btn_water = Button((self.footer.rect.centerx + 50, self.footer.rect.centery),(75, 75),'ground_water', self.brush[171]) # water
-        self.add(self.btn_water)
+        btn_water = Button((self.footer.rect.centerx + 50, self.footer.rect.centery),(75, 75),'ground_water', self.brush[171]) # water
+        self.add(btn_water)
 
-        self.btn_ground = Button((self.footer.rect.centerx - 50, self.footer.rect.centery), (75, 75), 'ground_ground', self.brush[45])  # ground
-        self.add(self.btn_ground)
+        btn_ground = Button((self.footer.rect.centerx - 50, self.footer.rect.centery), (75, 75), 'ground_ground', self.brush[45])  # ground
+        self.add(btn_ground)
 
-        self.btn_list = [self.btn_water, self.btn_ground]
+        self.btn_list = [btn_water, btn_ground]
 
         self.coin = Coin((WIDTH, 0), (60,60))
         self.add(self.coin)
+
+        btn_direction_up = Button_direction((self.footer.rect.right+30, self.footer.rect.centery-30), (50, 50), 'btn_up', load_img('../data/img/up_btn.png', tile=False))
+        btn_direction_down = Button_direction((self.footer.rect.right+30, self.footer.rect.centery+30), (50, 50), 'btn_down', load_img('../data/img/down_btn.png', tile=False))
+        self.add(btn_direction_up)
+        self.add(btn_direction_down)
+        self.btn_direction = [btn_direction_up, btn_direction_down]
 
     def get_type(self):
         for btn in self.btn_list:
@@ -34,6 +42,26 @@ class Interface(pygame.sprite.Group):
                     btn.status = True
                 else:
                     btn.status = False
+        elif self.btn_direction[0].rect.collidepoint(mouse):
+            self.btn_list = self.swap_btn(-1)
+        elif self.btn_direction[1].rect.collidepoint(mouse):
+            self.btn_list = self.swap_btn(1)
+
+    def swap_btn(self, vector):
+        for btn in self.btn_list:
+            btn.kill()
+        if vector == -1:
+            btn_water = Button((self.footer.rect.centerx + 50, self.footer.rect.centery), (75, 75), 'ground_water', self.brush[171])  # water
+            self.add(btn_water)
+
+            btn_ground = Button((self.footer.rect.centerx - 50, self.footer.rect.centery), (75, 75), 'ground_ground', self.brush[45])  # ground
+            self.add(btn_ground)
+            return [btn_water, btn_ground]
+
+        if vector == 1:
+            btn_wood = Button((self.footer.rect.centerx + 50, self.footer.rect.centery), (75, 75), 'build_wood', self.brush[173])  # wood
+            self.add(btn_wood)
+            return [btn_wood]
 
 
 class Footer(pygame.sprite.Sprite):
@@ -76,8 +104,8 @@ class Coin(pygame.sprite.Sprite):
         self.pos = pos
         self.size = size
         self.coin = 10
-        self.incom = 120
-        self.incom_tick = 120
+        self.incom = 200
+        self.incom_tick = 200
 
         self.font = pygame.font.Font('../data/PressStart2P.ttf', 25)
         self.image = pygame.Surface((self.size[0]*2, self.size[1]), pygame.SRCALPHA)
@@ -107,4 +135,15 @@ class Coin(pygame.sprite.Sprite):
         else:
             self.incom_tick -= 1
 
+
+class Button_direction(pygame.sprite.Sprite):
+    def __init__(self, pos, size, type, img):
+        super().__init__()
+        self.size = size
+        self.image = pygame.transform.scale(img, size)
+
+        self.rect = self.image.get_rect(center=pos)
+
+        self.status = False
+        self.type = type
 
