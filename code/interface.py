@@ -13,10 +13,12 @@ class Interface(pygame.sprite.Group):
 
         self.brush = import_brush('../data/img/basictiles2.png', (16, 16))
 
-        btn_water = Button((self.footer.rect.centerx + 50, self.footer.rect.centery),(75, 75),'ground_water', self.brush[171]) # water
+        btn_water = Button((self.footer.rect.centerx + 50, self.footer.rect.centery),(75, 75),'ground_water',
+                           self.brush[171], title='water', text='5') # water
         self.add(btn_water)
 
-        btn_ground = Button((self.footer.rect.centerx - 50, self.footer.rect.centery), (75, 75), 'ground_ground', self.brush[45])  # ground
+        btn_ground = Button((self.footer.rect.centerx - 50, self.footer.rect.centery),
+                                (75, 75), 'ground_ground', self.brush[45], title='ground', text='20')
         self.add(btn_ground)
 
         self.btn_list = [btn_water, btn_ground]
@@ -51,17 +53,29 @@ class Interface(pygame.sprite.Group):
         for btn in self.btn_list:
             btn.kill()
         if vector == -1:
-            btn_water = Button((self.footer.rect.centerx + 50, self.footer.rect.centery), (75, 75), 'ground_water', self.brush[171])  # water
+            btn_water = Button((self.footer.rect.centerx + 50, self.footer.rect.centery),
+                               (75, 75), 'ground_water', self.brush[171], title='water', text='5')  # water
             self.add(btn_water)
 
-            btn_ground = Button((self.footer.rect.centerx - 50, self.footer.rect.centery), (75, 75), 'ground_ground', self.brush[45])  # ground
+            btn_ground = Button((self.footer.rect.centerx - 50, self.footer.rect.centery),
+                                (75, 75), 'ground_ground', self.brush[45], title='ground', text='20')  # ground
             self.add(btn_ground)
             return [btn_water, btn_ground]
 
         if vector == 1:
-            btn_wood = Button((self.footer.rect.centerx + 50, self.footer.rect.centery), (75, 75), 'build_wood', self.brush[173])  # wood
+            btn_wood = Button((self.footer.rect.centerx + 50, self.footer.rect.centery),
+                              (75, 75), 'build_wood', self.brush[91], color=(100,100,100), title='wood', text='15')  # wood
             self.add(btn_wood)
-            return [btn_wood]
+
+            btn_house = Button((self.footer.rect.centerx - 50, self.footer.rect.centery),
+                               (75, 75), 'build_house', self.brush[19], color=(100,100,100), title='house', text='25')  # house
+            self.add(btn_house)
+
+            btn_mill = Button((self.footer.rect.centerx - 155, self.footer.rect.centery),
+                              (75, 75), 'build_mill', self.brush[100], color=(100,100,100), title='mill', text='50')  # mill
+            self.add(btn_mill)
+
+            return [btn_wood, btn_house, btn_mill]
 
 
 class Footer(pygame.sprite.Sprite):
@@ -73,16 +87,28 @@ class Footer(pygame.sprite.Sprite):
 
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self, pos, size, type='', img=None):
+    def __init__(self, pos, size, type='', img=pygame.Surface((70,70)), color=(20,20,20), title='', text=''):
         super().__init__()
         self.size = size
         self.img = img
-        if img:
-            self.image = pygame.Surface(size)
-            self.image.fill((20,20,20))
-            self.image.blit(pygame.transform.scale(img, (size[0]-4,size[1]-4)), (2,2))
-        else:
-            self.image = pygame.Surface(size)
+
+        self.color = color
+        self.font_title = pygame.font.Font('../data/PressStart2P.ttf', 11)
+        self.font_text = pygame.font.Font('../data/PressStart2P.ttf', 20)
+
+        self.title_text = self.font_title.render(str(title), True, (110, 0, 0))
+        self.title_rect = self.title_text.get_rect(midtop=(size[0]//2-4, 1))
+
+        self.text_text = self.font_text.render(str(text), True, (70, 0, 0))
+        self.text_rect = self.text_text.get_rect(center=((size[0]-4)//2,(size[1]-4)//2))
+
+        self.img.blit(self.title_text, self.title_rect)
+        self.img.blit(self.text_text, self.text_rect)
+
+        self.image = pygame.Surface(size)
+        self.image.fill(self.color)
+        self.image.blit(pygame.transform.scale(img, (size[0]-4,size[1]-4)), (2,2))
+
         self.rect = self.image.get_rect(center=pos)
 
         self.status = False
@@ -91,11 +117,11 @@ class Button(pygame.sprite.Sprite):
     def update(self):
         if self.status:
             self.image = pygame.Surface(self.size)
-            self.image.fill((20, 20, 20))
+            self.image.fill(self.color)
             self.image.blit(pygame.transform.scale(self.img, (self.size[0] - 8, self.size[1] - 8)), (4, 4))
         else:
             self.image = pygame.Surface(self.size)
-            self.image.fill((20, 20, 20))
+            self.image.fill(self.color)
             self.image.blit(pygame.transform.scale(self.img, (self.size[0] - 2, self.size[1] - 2)), (1, 1))
 
 class Coin(pygame.sprite.Sprite):
@@ -104,6 +130,7 @@ class Coin(pygame.sprite.Sprite):
         self.pos = pos
         self.size = size
         self.coin = 10
+        self.incom_coin = 1
         self.incom = 200
         self.incom_tick = 200
 
@@ -122,7 +149,7 @@ class Coin(pygame.sprite.Sprite):
 
     def update(self):
         if self.incom_tick <= 0:
-            self.coin += 1
+            self.coin += self.incom_coin
 
             coin_txt = self.font.render(str(self.coin), True, (180, 0, 0))
             coin_rect = coin_txt.get_rect(midleft=(0, self.size[1] // 2))
@@ -135,6 +162,14 @@ class Coin(pygame.sprite.Sprite):
         else:
             self.incom_tick -= 1
 
+    def up_incom(self, value):
+        self.incom_coin += value
+
+    def buy(self, value):
+        self.coin -= value
+
+    def get_coin(self):
+        return self.coin
 
 class Button_direction(pygame.sprite.Sprite):
     def __init__(self, pos, size, type, img):

@@ -31,15 +31,16 @@ class Level:
     def draw(self, mouse_pos):
         self.bg_sprites.draw(self.screen)
         self.ground_sprites.draw(self.screen)
+        self.build_sprites.draw(self.screen)
         self.cursor_sprites.draw(mouse_pos)
         self.interface.draw(self.screen)
 
     def click(self, mouse):
         key = False
         interface_type = self.interface.get_type()
-        for ground in self.ground_sprites:
-            if ground.rect.collidepoint(mouse) and interface_type:
-                self.build_sprites.update(ground, interface_type)
+        for ground_sp in self.ground_sprites:
+            if ground_sp.rect.collidepoint(mouse) and interface_type:
+                self.build_sprites.update(ground_sp, interface_type)
                 key = True
         if not key:
             if mouse[1] < HIGHT - HIGHT // 5:
@@ -67,9 +68,12 @@ class Cursor_group(pygame.sprite.Group):
 class Ground_group(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
+        self.ground_types = ['ground_water', 'ground_ground']
         self.screen = pygame.display.get_surface()
 
     def update(self, sprite, type_tile):
+        if type_tile not in self.ground_types:
+            return
         x, y = sprite.rect.left, sprite.rect.top
         flag = True
         for g_sprite in self.sprites():
@@ -86,9 +90,16 @@ class Build_group(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
         self.screen = pygame.display.get_surface()
+        self.build_types = ['build_wood', 'build_house', 'build_mill']
 
     def update(self, sprite, type_tile):
+        if type_tile not in self.build_types:
+            return
         x, y = sprite.rect.left, sprite.rect.top
+
+
+
+
         flag = True
         for g_sprite in self.sprites():
             if g_sprite.rect.collidepoint((x + 1, y + 1)):
