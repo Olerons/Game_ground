@@ -19,6 +19,9 @@ class Interface(pygame.sprite.Group):
 
         self.btn_list = [self.btn_water, self.btn_ground]
 
+        self.coin = Coin((WIDTH, 0), (60,60))
+        self.add(self.coin)
+
     def get_type(self):
         for btn in self.btn_list:
             if btn.status:
@@ -66,3 +69,42 @@ class Button(pygame.sprite.Sprite):
             self.image = pygame.Surface(self.size)
             self.image.fill((20, 20, 20))
             self.image.blit(pygame.transform.scale(self.img, (self.size[0] - 2, self.size[1] - 2)), (1, 1))
+
+class Coin(pygame.sprite.Sprite):
+    def __init__(self, pos, size):
+        super().__init__()
+        self.pos = pos
+        self.size = size
+        self.coin = 10
+        self.incom = 120
+        self.incom_tick = 120
+
+        self.font = pygame.font.Font('../data/PressStart2P.ttf', 25)
+        self.image = pygame.Surface((self.size[0]*2, self.size[1]), pygame.SRCALPHA)
+
+        self.img = load_img('../data/img/moneta.png', tile=False)
+        self.img = pygame.transform.scale(self.img, self.size)
+        self.image.blit(self.img, (size[0],0))
+
+        coin_txt = self.font.render(str(self.coin), True, (180, 0, 0))
+        coin_rect = coin_txt.get_rect(midleft=(0, size[1]//2))
+        self.image.blit(coin_txt, coin_rect)
+
+        self.rect = self.image.get_rect(topright=pos)
+
+    def update(self):
+        if self.incom_tick <= 0:
+            self.coin += 1
+
+            coin_txt = self.font.render(str(self.coin), True, (180, 0, 0))
+            coin_rect = coin_txt.get_rect(midleft=(0, self.size[1] // 2))
+
+            empty = pygame.Color(0, 0, 0, 0)
+            self.image.fill(empty, (0,0,self.size[0], self.size[1]))
+            self.image.blit(coin_txt, coin_rect)
+
+            self.incom_tick = self.incom
+        else:
+            self.incom_tick -= 1
+
+

@@ -5,6 +5,7 @@ from settings import *
 from level import Level
 from interface import Interface
 
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -33,10 +34,11 @@ class Game:
                 self.running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.interface.click(pygame.mouse.get_pos())
-                self.interface.update()
+                #self.interface.update()
 
     def render(self):
         self.game_screen.fill('black')
+        self.interface.update()
         self.level.draw(pygame.mouse.get_pos())
         #debug('Test')
 
