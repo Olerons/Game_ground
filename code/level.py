@@ -40,6 +40,7 @@ class Level:
     def click(self, mouse):
         key = False
         interface_type = self.interface.get_type()
+
         if self.interface.coin.get_coin() <= TILES_COST[interface_type]:
             return
         for ground_sp in self.ground_sprites:

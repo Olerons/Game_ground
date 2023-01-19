@@ -36,6 +36,7 @@ class Interface(pygame.sprite.Group):
         for btn in self.btn_list:
             if btn.status:
                 return btn.type
+        return 'None'
 
     def click(self, mouse):
         if self.footer.rect.collidepoint(mouse):
@@ -129,12 +130,12 @@ class Coin(pygame.sprite.Sprite):
         super().__init__()
         self.pos = pos
         self.size = size
-        self.coin = 10
+        self.coin = 100
         self.incom_coin = 1
         self.incom = 200
         self.incom_tick = 200
 
-        self.font = pygame.font.Font('../data/PressStart2P.ttf', 25)
+        self.font = pygame.font.Font('../data/PressStart2P.ttf', 20)
         self.image = pygame.Surface((self.size[0]*2, self.size[1]), pygame.SRCALPHA)
 
         self.img = load_img('../data/img/moneta.png', tile=False)

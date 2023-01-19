@@ -10,5 +10,6 @@ TILES_COST = {
     'ground_ground':15,
     'build_wood':5,
     'build_house':50,
-    'build_mill':100
+    'build_mill':100,
+    'None':0
 }
