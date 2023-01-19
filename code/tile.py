@@ -5,7 +5,7 @@ from random import choice
 
 
 class Tile(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, type='', image=pygame.surface.Surface((TILESIZE,TILESIZE))):
+    def __init__(self, pos, groups, type='', image=pygame.surface.Surface((TILESIZE,TILESIZE)), animated=False):
         super().__init__(groups)
         self.type = type
         self.image = image
@@ -13,6 +13,7 @@ class Tile(pygame.sprite.Sprite):
         self.income_plus = 0
         self.place = ''
         self.needs = {}
+        self.animated = animated
 
         if type == 'bg':
             self.image = pygame.Surface((TILESIZE, TILESIZE))
@@ -24,10 +25,14 @@ class Tile(pygame.sprite.Sprite):
             self.brush = import_brush('../data/img/basictiles2.png', (16, 16))
             self.image = self.brush[choice([171, 172])] # water
             self.cost = 5
+            self.animated_list = [self.brush[choice([171, 172])], self.brush[choice([171, 172])], self.brush[choice([171, 172])], self.brush[choice([171, 172])]]
+            self.animated_tick = 70
+            self.animated_index = 0
+            self.animated = True
 
         elif type == 'ground_ground':
             self.brush = import_brush('../data/img/basictiles2.png', (16, 16))
-            self.image = self.brush[45] # ground
+            self.image = self.brush[choice([45, 46])] # ground
             self.cost = 20
 
         elif type == 'build_wood':
@@ -55,3 +60,10 @@ class Tile(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect(topleft=pos)
 
+    def update(self):
+        if self.animated:
+            if self.animated_tick <= 0:
+                self.animated_index = (self.animated_index + 1) % len(self.animated_list)
+                self.image = self.animated_list[self.animated_index]
+                self.animated_tick = 70
+            self.animated_tick -= 1

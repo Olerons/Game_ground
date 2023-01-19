@@ -12,12 +12,12 @@ class Level:
 
         self.brush = import_brush('../data/img/basictiles2.png', (16, 16))
 
+        self.interface = interface
         self.bg_sprites = pygame.sprite.Group()
-        self.ground_sprites = Ground_group()
-        self.build_sprites = Build_group()
+        self.ground_sprites = Ground_group(self.interface.coin)
+        self.build_sprites = Build_group(self.interface.coin)
         self.cursor_sprites = Cursor_group(self.bg_sprites)
         self.object_sprites = pygame.sprite.Group()
-        self.interface = interface
 
         self.create_map()
 
@@ -29,6 +29,8 @@ class Level:
                 Tile((x, y), [self.bg_sprites], type='bg')
 
     def draw(self, mouse_pos):
+        self.ground_sprites.animation_update()
+
         self.bg_sprites.draw(self.screen)
         self.ground_sprites.draw(self.screen)
         self.build_sprites.draw(self.screen)
@@ -38,6 +40,8 @@ class Level:
     def click(self, mouse):
         key = False
         interface_type = self.interface.get_type()
+        if self.interface.coin.get_coin() <= TILES_COST[interface_type]:
+            return
         for ground_sp in self.ground_sprites:
             if ground_sp.rect.collidepoint(mouse) and interface_type:
                 self.build_sprites.update(ground_sp, interface_type)
@@ -47,7 +51,6 @@ class Level:
                 for sprite in self.bg_sprites:
                     if sprite.rect.collidepoint(mouse) and interface_type:
                         self.ground_sprites.update(sprite, interface_type)
-
 
 class Cursor_group(pygame.sprite.Group):
     def __init__(self, bg_group):
@@ -66,10 +69,15 @@ class Cursor_group(pygame.sprite.Group):
 
 
 class Ground_group(pygame.sprite.Group):
-    def __init__(self):
+    def __init__(self, coin):
         super().__init__()
         self.ground_types = ['ground_water', 'ground_ground']
         self.screen = pygame.display.get_surface()
+        self.coin = coin
+
+    def animation_update(self):
+        for sprite in self.sprites():
+            sprite.update()
 
     def update(self, sprite, type_tile):
         if type_tile not in self.ground_types:
@@ -81,14 +89,17 @@ class Ground_group(pygame.sprite.Group):
                 if g_sprite.type != type_tile:
                     g_sprite.kill()
                     Tile((x, y), [self], type=type_tile)
+                    self.coin.buy(TILES_COST[type_tile])
                 flag = False
         if flag:
             Tile((x, y), [self], type=type_tile)
+            self.coin.buy(TILES_COST[type_tile])
 
 
 class Build_group(pygame.sprite.Group):
-    def __init__(self):
+    def __init__(self, coin):
         super().__init__()
+        self.coin = coin
         self.screen = pygame.display.get_surface()
         self.build_types = ['build_wood', 'build_house', 'build_mill']
 
@@ -96,16 +107,14 @@ class Build_group(pygame.sprite.Group):
         if type_tile not in self.build_types:
             return
         x, y = sprite.rect.left, sprite.rect.top
-
-
-
-
         flag = True
         for g_sprite in self.sprites():
             if g_sprite.rect.collidepoint((x + 1, y + 1)):
                 if g_sprite.type != type_tile:
                     g_sprite.kill()
                     Tile((x, y), [self], type=type_tile)
+                    self.coin.buy(TILES_COST[type_tile])
                 flag = False
         if flag:
             Tile((x, y), [self], type=type_tile)
+            self.coin.buy(TILES_COST[type_tile])

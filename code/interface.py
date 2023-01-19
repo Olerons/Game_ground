@@ -107,7 +107,7 @@ class Button(pygame.sprite.Sprite):
 
         self.image = pygame.Surface(size)
         self.image.fill(self.color)
-        self.image.blit(pygame.transform.scale(img, (size[0]-4,size[1]-4)), (2,2))
+        self.image.blit(pygame.transform.scale(img, (size[0]-2,size[1]-2)), (1,1))
 
         self.rect = self.image.get_rect(center=pos)
 
@@ -147,18 +147,19 @@ class Coin(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect(topright=pos)
 
-    def update(self):
-        if self.incom_tick <= 0:
-            self.coin += self.incom_coin
+    def update(self, korrect=False):
+        if self.incom_tick <= 0 or korrect:
+            if self.incom_tick <= 0:
+                self.coin += self.incom_coin
+                self.incom_tick = self.incom
 
             coin_txt = self.font.render(str(self.coin), True, (180, 0, 0))
             coin_rect = coin_txt.get_rect(midleft=(0, self.size[1] // 2))
 
             empty = pygame.Color(0, 0, 0, 0)
-            self.image.fill(empty, (0,0,self.size[0], self.size[1]))
+            self.image.fill(empty, (0, 0, self.size[0], self.size[1]))
             self.image.blit(coin_txt, coin_rect)
 
-            self.incom_tick = self.incom
         else:
             self.incom_tick -= 1
 
@@ -167,6 +168,7 @@ class Coin(pygame.sprite.Sprite):
 
     def buy(self, value):
         self.coin -= value
+        self.update(korrect=True)
 
     def get_coin(self):
         return self.coin
