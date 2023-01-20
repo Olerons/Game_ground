@@ -107,15 +107,20 @@ class Build_group(pygame.sprite.Group):
     def update(self, sprite, type_tile):
         if type_tile not in self.build_types:
             return
+        if type_tile in TILES_PLACE.keys() and TILES_PLACE[type_tile] != sprite.type:
+            return
         x, y = sprite.rect.left, sprite.rect.top
         flag = True
         for g_sprite in self.sprites():
             if g_sprite.rect.collidepoint((x + 1, y + 1)):
                 if g_sprite.type != type_tile:
+                    self.coin.down_incom(TILES_UP_INCOM[g_sprite.type])
                     g_sprite.kill()
                     Tile((x, y), [self], type=type_tile)
                     self.coin.buy(TILES_COST[type_tile])
+                    self.coin.up_incom(TILES_UP_INCOM[type_tile])
                 flag = False
         if flag:
             Tile((x, y), [self], type=type_tile)
             self.coin.buy(TILES_COST[type_tile])
+            self.coin.up_incom(TILES_UP_INCOM[type_tile])

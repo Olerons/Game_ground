@@ -9,9 +9,7 @@ class Tile(pygame.sprite.Sprite):
         super().__init__(groups)
         self.type = type
         self.image = image
-        self.income_plus = 0
         self.place = ''
-        self.needs = {}
         self.animated = animated
 
         if type == 'bg':
@@ -30,27 +28,22 @@ class Tile(pygame.sprite.Sprite):
 
         elif type == 'ground_ground':
             self.brush = import_brush('../data/img/basictiles2.png', (16, 16))
-            self.image = self.brush[choice([45, 46])] # ground
+            self.image = self.brush[choice((45, 46))] # ground
 
         elif type == 'build_wood':
             self.brush = import_brush('../data/img/basictiles2.png', (16, 16))
-            self.image = self.brush[91]
+            self.image = self.brush[choice((112,91))]
             self.place = 'ground_ground'
-            self.needs = {'ground_ground': 4}
 
         elif type == 'build_house':
             self.brush = import_brush('../data/img/basictiles2.png', (16, 16))
-            self.image = self.brush[19]
-            self.income_plus = 5
+            self.image = self.brush[choice((18,19,20))]
             self.place = 'ground_ground'
-            self.needs = {'ground_ground': 9}
 
         elif type == 'build_mill':
             self.brush = import_brush('../data/img/basictiles2.png', (16, 16))
-            self.image = self.brush[100]
-            self.income_plus = 5
+            self.image = self.brush[choice((121,100))]
             self.place = 'ground_ground'
-            self.needs = {'ground_ground': 9}
 
         self.rect = self.image.get_rect(topleft=pos)
 

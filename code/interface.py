@@ -14,11 +14,11 @@ class Interface(pygame.sprite.Group):
         self.brush = import_brush('../data/img/basictiles2.png', (16, 16))
 
         btn_water = Button((self.footer.rect.centerx + 50, self.footer.rect.centery),(75, 75),'ground_water',
-                           self.brush[171], title='water', text='5') # water
+                           self.brush[171], title='water', text=TILES_COST['ground_water']) # water
         self.add(btn_water)
 
         btn_ground = Button((self.footer.rect.centerx - 50, self.footer.rect.centery),
-                                (75, 75), 'ground_ground', self.brush[45], title='ground', text='20')
+                                (75, 75), 'ground_ground', self.brush[45], title='ground', text=TILES_COST['ground_ground'])
         self.add(btn_ground)
 
         self.btn_list = [btn_water, btn_ground]
@@ -55,25 +55,25 @@ class Interface(pygame.sprite.Group):
             btn.kill()
         if vector == -1:
             btn_water = Button((self.footer.rect.centerx + 50, self.footer.rect.centery),
-                               (75, 75), 'ground_water', self.brush[171], title='water', text='5')  # water
+                               (75, 75), 'ground_water', self.brush[171], title='water', text=TILES_COST['ground_water'])  # water
             self.add(btn_water)
 
             btn_ground = Button((self.footer.rect.centerx - 50, self.footer.rect.centery),
-                                (75, 75), 'ground_ground', self.brush[45], title='ground', text='20')  # ground
+                                (75, 75), 'ground_ground', self.brush[45], title='ground', text=TILES_COST['ground_ground'])  # ground
             self.add(btn_ground)
             return [btn_water, btn_ground]
 
         if vector == 1:
             btn_wood = Button((self.footer.rect.centerx + 50, self.footer.rect.centery),
-                              (75, 75), 'build_wood', self.brush[91], color=(100,100,100), title='wood', text='15')  # wood
+                              (75, 75), 'build_wood', self.brush[91], color=(100,100,100), title='wood', text=TILES_COST['build_wood'])  # wood
             self.add(btn_wood)
 
             btn_house = Button((self.footer.rect.centerx - 50, self.footer.rect.centery),
-                               (75, 75), 'build_house', self.brush[19], color=(100,100,100), title='house', text='25')  # house
+                               (75, 75), 'build_house', self.brush[19], color=(100,100,100), title='house', text=TILES_COST['build_house'])  # house
             self.add(btn_house)
 
             btn_mill = Button((self.footer.rect.centerx - 155, self.footer.rect.centery),
-                              (75, 75), 'build_mill', self.brush[100], color=(100,100,100), title='mill', text='50')  # mill
+                              (75, 75), 'build_mill', self.brush[100], color=(100,100,100), title='mill', text=TILES_COST['build_mill'])  # mill
             self.add(btn_mill)
 
             return [btn_wood, btn_house, btn_mill]
@@ -166,6 +166,9 @@ class Coin(pygame.sprite.Sprite):
 
     def up_incom(self, value):
         self.incom_coin += value
+
+    def down_incom(self, value):
+        self.incom_coin -= value
 
     def buy(self, value):
         self.coin -= value
