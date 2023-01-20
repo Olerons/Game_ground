@@ -5,13 +5,12 @@ from settings import *
 from level import Level
 from interface import Interface
 
-
 class Game:
     def __init__(self):
         pygame.init()
         pygame.display.set_caption('Ground Game')
 
-        self.game_screen = pygame.display.set_mode((WIDTH, HIGHT))
+        self.game_screen = pygame.display.set_mode((100,100), flags=pygame.FULLSCREEN)
 
         self.running = True
         self.clock = pygame.time.Clock()
@@ -30,7 +29,7 @@ class Game:
 
     def event_process(self):
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.interface.click(pygame.mouse.get_pos())

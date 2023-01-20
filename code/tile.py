@@ -6,7 +6,7 @@ from random import choice
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self, pos, groups, type='', image=pygame.surface.Surface((TILESIZE,TILESIZE)), animated=False):
-        super().__init__(groups)
+        super().__init__(groups, ALL_SPRITES)
         self.type = type
         self.image = image
         self.place = ''

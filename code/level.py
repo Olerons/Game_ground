@@ -15,7 +15,7 @@ class Level:
         self.interface = interface
         self.bg_sprites = pygame.sprite.Group()
         self.ground_sprites = Ground_group(self.interface.coin)
-        self.build_sprites = Build_group(self.interface.coin)
+        self.build_sprites = Build_group(self.interface)
         self.cursor_sprites = Cursor_group(self.bg_sprites)
 
         self.object_sprites = pygame.sprite.Group()
@@ -99,9 +99,10 @@ class Ground_group(pygame.sprite.Group):
 
 
 class Build_group(pygame.sprite.Group):
-    def __init__(self, coin):
+    def __init__(self, interface):
         super().__init__()
-        self.coin = coin
+        self.coin = interface.coin
+        self.human = interface.human
         self.screen = pygame.display.get_surface()
         self.build_types = ['build_wood', 'build_house', 'build_mill']
 
@@ -111,6 +112,9 @@ class Build_group(pygame.sprite.Group):
         if type_tile in TILES_PLACE.keys() and TILES_PLACE[type_tile] != sprite.type:
             return
         x, y = sprite.rect.left, sprite.rect.top
+        for key, val in TILES_NEEDS[type_tile].items():
+            if self.environment(sprite).count(key) < val:
+                return
         flag = True
         for g_sprite in self.sprites():
             if g_sprite.rect.collidepoint((x + 1, y + 1)):
@@ -119,12 +123,19 @@ class Build_group(pygame.sprite.Group):
                     g_sprite.kill()
                     Tile((x, y), [self], type=type_tile)
                     self.coin.buy(TILES_COST[type_tile])
-                    self.coin.up_incom(TILES_UP_INCOM[type_tile])
+                    self.coin.up_incom(TILES_UP_INCOM[type_tile][0])
+                    self.human.up_incom(TILES_UP_INCOM[type_tile][1])
                 flag = False
         if flag:
             Tile((x, y), [self], type=type_tile)
             self.coin.buy(TILES_COST[type_tile])
-            self.coin.up_incom(TILES_UP_INCOM[type_tile])
+            self.coin.up_incom(TILES_UP_INCOM[type_tile][0])
+            self.human.up_incom(TILES_UP_INCOM[type_tile][1])
 
     def environment(self, sprite):
-        pass
+        x,y = sprite.rect.left, sprite.rect.top
+        env_list = []
+        for spr in ALL_SPRITES:
+            if spr.rect.colliderect((x-TILESIZE,y-TILESIZE), (TILESIZE*3, TILESIZE*3)):
+                env_list.append(spr.type)
+        return env_list
