@@ -46,9 +46,11 @@ class Interface(pygame.sprite.Group):
                 else:
                     btn.status = False
         elif self.btn_direction[0].rect.collidepoint(mouse):
+            self.btn_direction[0].push()
             self.btn_list = self.swap_btn(-1)
         elif self.btn_direction[1].rect.collidepoint(mouse):
             self.btn_list = self.swap_btn(1)
+            self.btn_direction[1].push()
 
     def swap_btn(self, vector):
         for btn in self.btn_list:
@@ -125,6 +127,7 @@ class Button(pygame.sprite.Sprite):
             self.image.fill(self.color)
             self.image.blit(pygame.transform.scale(self.img, (self.size[0] - 2, self.size[1] - 2)), (1, 1))
 
+
 class Coin(pygame.sprite.Sprite):
     def __init__(self, pos, size):
         super().__init__()
@@ -181,10 +184,26 @@ class Button_direction(pygame.sprite.Sprite):
     def __init__(self, pos, size, type, img):
         super().__init__()
         self.size = size
-        self.image = pygame.transform.scale(img, size)
+        self.img = img
+
+        self.unpush_image = pygame.transform.scale(img, size)
+        self.push_image = pygame.transform.scale(self.img, (self.size[0]-3, self.size[1]-3))
+
+        self.image = self.unpush_image
 
         self.rect = self.image.get_rect(center=pos)
 
         self.status = False
         self.type = type
 
+        self.push_time = 0
+
+    def update(self):
+        if self.push_time > 0:
+            self.image = self.push_image
+            self.push_time -= 1
+        else:
+            self.image = self.unpush_image
+
+    def push(self):
+        self.push_time = 5

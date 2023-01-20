@@ -17,6 +17,7 @@ class Level:
         self.ground_sprites = Ground_group(self.interface.coin)
         self.build_sprites = Build_group(self.interface.coin)
         self.cursor_sprites = Cursor_group(self.bg_sprites)
+
         self.object_sprites = pygame.sprite.Group()
 
         self.create_map()
@@ -124,3 +125,6 @@ class Build_group(pygame.sprite.Group):
             Tile((x, y), [self], type=type_tile)
             self.coin.buy(TILES_COST[type_tile])
             self.coin.up_incom(TILES_UP_INCOM[type_tile])
+
+    def environment(self, sprite):
+        pass
